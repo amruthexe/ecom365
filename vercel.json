@@ -1,0 +1,16 @@
+{
+    "redirects": [
+      {
+        "source": "/(.*)",
+        "has": [
+          {
+            "type": "host",
+            "value": "myvevvion.com"
+          }
+        ],
+        "destination": "https://www.myvevvion.com/:1",
+        "statusCode": 308
+      }
+    ]
+  }
+  

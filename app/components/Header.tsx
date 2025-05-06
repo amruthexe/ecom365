@@ -26,7 +26,7 @@ export default function Header() {
         <Link
           href="/"
           className="flex items-center gap-2"
-          onClick={() => showNotification("Welcome to ImageKit Shop", "info")}
+          onClick={() => showNotification("vevvion", "info")}
         >
           <Image
             src="/logo.jpg"

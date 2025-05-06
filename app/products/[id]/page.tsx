@@ -9,7 +9,7 @@ import {
 } from "@/models/Product";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, AlertCircle, Check } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useNotification } from "@/app/components/Notification";
 import { useSession } from "next-auth/react";
 import { apiClient } from "@/lib/api-client";
@@ -51,6 +51,7 @@ export default function ProductPage() {
   }, [params?.id]);
 
   const handlePurchase = async (variant: ImageVariant, shippingAddress: any) => {
+    console.log('handlePurchase called', { variant, shippingAddress });
     if (!session) {
       showNotification("Please login to make a purchase", "error");
       router.push("/login");
@@ -63,12 +64,14 @@ export default function ProductPage() {
     }
 
     try {
+      console.log('Creating order...');
       const { orderId, amount } = await apiClient.createOrder({
         productId: product._id,
         variant,
         quantity,
         shippingAddress,
       });
+      console.log('Order created', { orderId, amount });
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -88,10 +91,16 @@ export default function ProductPage() {
         },
       };
 
+      if (!(window as any).Razorpay) {
+        console.error('Razorpay script not loaded');
+        showNotification('Razorpay script not loaded', 'error');
+        return;
+      }
+      console.log('Opening Razorpay...', options);
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.error(error);
+      console.error('Error in handlePurchase:', error);
       showNotification(
         error instanceof Error ? error.message : "Payment failed",
         "error"

@@ -8,6 +8,7 @@ import PopularProducts from "./components/PopularProducts";
 import Footer from "./components/Footer";
 import { Loader2 } from "lucide-react";
 import ProductReviews from "./components/ProductReviews";
+import Link from "next/link";
 
 export default function HomePage() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -42,9 +43,9 @@ export default function HomePage() {
       <Hero />
       <PopularProducts products={products} />
       <div className="flex justify-center my-8">
-        <a href="/products" className="btn bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-3 rounded-full font-semibold shadow-md transition">
+        <Link href="/products" className="btn bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-3 rounded-full font-semibold shadow-md transition">
           View All Products
-        </a>
+        </Link>
       </div>
       <ProductReviews />
       <div className="h-12" />

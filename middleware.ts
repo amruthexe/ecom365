@@ -25,13 +25,18 @@ export default withAuth(
         }
 
         // Public routes
-        if (
-          pathname === "/" ||
-          pathname.startsWith("/api/products") ||
-          pathname.startsWith("/products")
-        ) {
-          return true;
-        }
+        // Public routes
+if (
+  pathname === "/" ||
+  pathname.startsWith("/api/products") ||
+  pathname.startsWith("/products") ||
+  pathname === "/team" ||
+  pathname === "/about" ||
+  pathname === "/order"
+) {
+  return true;
+}
+
 
         // Admin routes require admin role
         if (pathname.startsWith("/admin")) {

@@ -6,8 +6,15 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: false, // Disable React strict mode (optional, helps identify hydration causes)
   images: {
-    domains: ["ik.imagekit.io"],
-  },
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'doctrramj.ik.imagekit.io',
+      },
+    ],
+  }
+  
+  
 };
 
 export default nextConfig;

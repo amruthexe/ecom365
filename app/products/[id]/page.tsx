@@ -73,23 +73,23 @@ export default function ProductPage() {
       });
       console.log('Order created', { orderId, amount });
 
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+const options = {
+  key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: amount,
-        currency: "INR",
-        name: "vevvion Shop",
-        description: `${product.name} - ${variant.type} Version x${quantity}`,
-        order_id: orderId,
-        handler: function () {
-          showNotification("Payment successful!", "success");
-          router.push("/orders");
-        },
-        prefill: {
+  currency: "INR",
+  name: "vevvion Shop",
+  description: `${product.name} - ${variant.type} Version x${quantity}`,
+  order_id: orderId,
+  handler: function () {
+    showNotification("Payment successful!", "success");
+    router.push("/orders");
+  },
+  prefill: {
           email: shippingAddress.email,
           contact: shippingAddress.phone,
           name: shippingAddress.fullName,
-        },
-      };
+  },
+};
 
       if (!(window as any).Razorpay) {
         console.error('Razorpay script not loaded');
@@ -210,13 +210,13 @@ export default function ProductPage() {
 
               <div className="text-right">
                 <div className="text-sm text-base-content/70">Total Price</div>
-                <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold">
                   ₹{totalPrice.toFixed(2)}
-                </span>
+              </span>
               </div>
 
               <button
-                className="btn btn-primary btn-lg w-full"
+                className="btn bg-green-600 text-white btn-lg w-full"
                 onClick={() => setShowCheckout(true)}
               >
                 Buy Now

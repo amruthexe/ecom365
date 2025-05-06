@@ -30,19 +30,12 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 shadow-md rounded bg-white">
+    <div className="max-w-md mx-auto mt-10 p-4 shadow-md rounded bg-black">
       {/* Logo and Welcome Text */}
       <div className="text-center mb-6">
         <div className="flex justify-center">
-          <Image
-            src="/logo.png"
-            alt="Vevvion Logo"
-            width={96}
-            height={96}
-            className="object-contain"
-          />
         </div>
-        <h2 className="text-3xl font-semibold text-gray-800 mt-2">
+        <h2 className="text-3xl font-semibold text-green-600 mt-2">
           Welcome to Vevvion
         </h2>
       </div>

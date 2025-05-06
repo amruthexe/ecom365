@@ -13,19 +13,25 @@ const razorpay = new Razorpay({
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
+    if (!session || !session.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { productId, variant, quantity = 1, shippingAddress } = await req.json();
+    const body = await req.json();
+    const { productId, variant, quantity = 1, shippingAddress } = body;
+
+    if (!productId || !variant?.price || !variant?.type || !variant?.license || !shippingAddress) {
+      return NextResponse.json({ error: "Invalid input data" }, { status: 400 });
+    }
+
     await connectToDatabase();
 
-    // Calculate total amount based on quantity
+    // Calculate total amount
     const totalAmount = variant.price * quantity;
     const amountInPaise = Math.round(totalAmount * 100);
 
-    // Create Razorpay order
-    const order = await razorpay.orders.create({
+    // Create order in Razorpay
+    const razorpayOrder = await razorpay.orders.create({
       amount: amountInPaise,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
@@ -35,21 +41,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Save order in MongoDB
     const newOrder = await Order.create({
       userId: session.user.id,
       productId,
       variant,
       quantity,
-      razorpayOrderId: order.id,
+      razorpayOrderId: razorpayOrder.id,
       amount: totalAmount,
       status: "pending",
       shippingAddress,
     });
 
     return NextResponse.json({
-      orderId: order.id,
+      orderId: razorpayOrder.id,
       amount: amountInPaise,
-      currency: order.currency,
+      currency: razorpayOrder.currency,
       dbOrderId: newOrder._id,
     });
   } catch (error) {

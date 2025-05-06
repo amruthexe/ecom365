@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Home, User } from "lucide-react";
+import { User } from "lucide-react";
 import { useNotification } from "./Notification";
 
 export default function Header() {
@@ -28,7 +29,14 @@ export default function Header() {
             prefetch={true}
             onClick={() => showNotification("Welcome to ImageKit Shop", "info")}
           >
-            <Home className="w-5 h-5" />
+            <Image
+              src="/logo.jpg"
+              alt="Vevvion Logo"
+              width={32}
+              height={32}
+              className="rounded-md"
+              priority
+            />
             Vevvion
           </Link>
         </div>
@@ -60,10 +68,7 @@ export default function Header() {
                           href="/admin"
                           className="px-4 py-2 hover:bg-base-200 block w-full"
                           onClick={() =>
-                            showNotification(
-                              "Welcome to Admin Dashboard",
-                              "info"
-                            )
+                            showNotification("Welcome to Admin Dashboard", "info")
                           }
                         >
                           Admin Dashboard

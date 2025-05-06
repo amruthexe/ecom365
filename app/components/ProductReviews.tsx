@@ -41,7 +41,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export default function ProductReviews() {
   return (
-    <section className="mt-12 bg-neutral-900 rounded-2xl p-6">
+    <section className="mt-12 mb-12 bg-neutral-900 rounded-2xl p-6">
       <h2 className="text-2xl font-bold mb-6 text-white">Customer Reviews</h2>
       <div className="space-y-6">
         {mockReviews.map((review, idx) => (

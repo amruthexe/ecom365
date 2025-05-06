@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNotification } from "../components/Notification";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -29,8 +30,25 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
+    <div className="max-w-md mx-auto mt-10 p-4 shadow-md rounded bg-white">
+      {/* Logo and Welcome Text */}
+      <div className="text-center mb-6">
+        <div className="flex justify-center">
+          <Image
+            src="/logo.jpg"
+            alt="Vevvion Logo"
+            width={96}
+            height={96}
+            className="object-contain"
+          />
+        </div>
+        <h2 className="text-3xl font-semibold text-gray-800 mt-2">
+          Welcome to Vevvion
+        </h2>
+      </div>
+
+      {/* Login Form */}
+      <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="block mb-1">
@@ -60,13 +78,13 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
         >
           Login
         </button>
         <p className="text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-blue-500 hover:text-blue-600">
+          <Link href="/register" className="text-green-500 hover:text-green-600">
             Register
           </Link>
         </p>

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { IKImage } from "imagekitio-next";
 import { IMAGE_VARIANTS } from "@/models/Product";
 import { Loader2 } from "lucide-react";
+import Footer from "../components/Footer";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -85,6 +86,11 @@ export default function ProductsPage() {
           })}
         </div>
       </div>
+      <div className="pt-12">
+      <Footer/>
+
+      </div>
+     
     </main>
   );
 } 

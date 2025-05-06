@@ -43,7 +43,7 @@ export default function HomePage() {
       <Hero />
       <PopularProducts products={products} />
       <div className="flex justify-center my-8">
-        <Link href="/products" className="btn bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-3 rounded-full font-semibold shadow-md transition">
+        <Link href="/products" className="btn bg-green-600 hover:bg-green-700 text-white text-lg px-8 py-3 rounded-full font-semibold shadow-md transition">
           View All Products
         </Link>
       </div>

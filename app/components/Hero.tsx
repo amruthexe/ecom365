@@ -14,7 +14,7 @@ export default function Hero() {
         <div className="max-w-3xl">
           <h1 className="text-5xl font-bold mb-6 animate-fade-in-up">
             Transform Your Life with{" "}
-            <span className="text-primary">Vevvion Wellness</span>
+            <span className="text-green-600">Vevvion Wellness</span>
           </h1>
           <p className="text-xl text-base-content/70 mb-8 animate-fade-in-up animation-delay-200">
             Discover our premium healthcare products designed to enhance your well-being and bring joy to your life.
@@ -22,7 +22,7 @@ export default function Hero() {
           <div className="flex gap-4 animate-fade-in-up animation-delay-400">
             <Link
               href="/products"
-              className="btn btn-primary btn-lg hover:scale-105 transition-transform"
+              className="btn text-white bg-green-600 btn-lg hover:scale-105 transition-transform"
             >
               Shop Now
             </Link>

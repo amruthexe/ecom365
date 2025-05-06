@@ -29,7 +29,7 @@ export default function Header() {
           onClick={() => showNotification("vevvion", "info")}
         >
           <Image
-            src="/logo.jpg"
+            src="/logo.png"
             alt="Vevvion Logo"
             width={250}
             height={80}

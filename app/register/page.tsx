@@ -50,7 +50,7 @@ export default function Register() {
       <div className="text-center mb-6">
         <div className="flex justify-center">
           <Image
-            src="/logo.jpg"
+            src="/logo.png"
             alt="Vevvion Logo"
             width={96}
             height={96}

@@ -28,14 +28,15 @@ export default function Header() {
           className="flex items-center gap-2"
           onClick={() => showNotification("vevvion", "info")}
         >
-          <Image
-            src="/logo.png"
-            alt="Vevvion Logo"
-            width={250}
-            height={80}
-            className="rounded-md"
-            priority
-          />
+        <Image
+  src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/image.png"
+  alt="Vevvion Logo"
+  width={200}
+  height={80}
+  className="rounded-md"
+  priority
+/>
+
         </Link>
 
         {/* Navigation Links */}

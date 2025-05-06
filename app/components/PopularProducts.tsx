@@ -48,7 +48,7 @@ export default function PopularProducts({ products }: PopularProductsProps) {
                   <div className="flex justify-between items-center mt-2">
                     <span className="text-xl font-semibold text-red-600">₹{defaultVariant.price.toFixed(2)}</span>
                     <span className="text-xs bg-red-900/80 text-white px-2 py-1 rounded-full">
-                      {defaultVariant.type} • {defaultVariant.license}
+                     View more Details
                     </span>
                   </div>
                 </div>

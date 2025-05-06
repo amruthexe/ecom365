@@ -29,7 +29,7 @@ export default function Header() {
             onClick={() => showNotification("Welcome to ImageKit Shop", "info")}
           >
             <Home className="w-5 h-5" />
-            ImageKit Shop
+            Vevvion
           </Link>
         </div>
         <div className="flex flex-1 justify-end px-2">

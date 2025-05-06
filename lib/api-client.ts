@@ -7,6 +7,17 @@ export type ProductFormData = Omit<IProduct, "_id">;
 export interface CreateOrderData {
   productId: Types.ObjectId | string;
   variant: ImageVariant;
+  quantity: number;
+  shippingAddress: {
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+  };
 }
 
 type FetchOptions = {
@@ -59,10 +70,13 @@ class ApiClient {
     return this.fetch<IOrder[]>("/orders/user");
   }
 
+  
+
   async createOrder(orderData: CreateOrderData) {
     const sanitizedOrderData = {
       ...orderData,
       productId: orderData.productId.toString(),
+      quantity: orderData.quantity
     };
 
     return this.fetch<{ orderId: string; amount: number }>("/orders", {

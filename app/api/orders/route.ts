@@ -17,16 +17,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { productId, variant } = await req.json();
+    const { productId, variant, quantity = 1, shippingAddress } = await req.json();
     await connectToDatabase();
+
+    // Calculate total amount based on quantity
+    const totalAmount = variant.price * quantity;
+    const amountInPaise = Math.round(totalAmount * 100);
 
     // Create Razorpay order
     const order = await razorpay.orders.create({
-      amount: Math.round(variant.price * 100),
+      amount: amountInPaise,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {
         productId: productId.toString(),
+        quantity: quantity.toString(),
       },
     });
 
@@ -34,14 +39,16 @@ export async function POST(req: NextRequest) {
       userId: session.user.id,
       productId,
       variant,
+      quantity,
       razorpayOrderId: order.id,
-      amount: variant.price,
+      amount: totalAmount,
       status: "pending",
+      shippingAddress,
     });
 
     return NextResponse.json({
       orderId: order.id,
-      amount: order.amount,
+      amount: amountInPaise,
       currency: order.currency,
       dbOrderId: newOrder._id,
     });

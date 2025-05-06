@@ -17,12 +17,23 @@ export interface IOrder {
   userId: mongoose.Types.ObjectId | PopulatedUser;
   productId: mongoose.Types.ObjectId | PopulatedProduct;
   variant: ImageVariant;
+  quantity: number;
   razorpayOrderId: string;
   razorpayPaymentId?: string;
   amount: number;
   status: "pending" | "completed" | "failed";
   downloadUrl?: string;
   previewUrl?: string;
+  shippingAddress: {
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -45,6 +56,7 @@ const orderSchema = new Schema<IOrder>(
         enum: ["personal", "commercial"],
       },
     },
+    quantity: { type: Number, required: true, default: 1, min: 1 },
     razorpayOrderId: { type: String, required: true },
     razorpayPaymentId: { type: String },
     amount: { type: Number, required: true },
@@ -56,6 +68,16 @@ const orderSchema = new Schema<IOrder>(
     },
     downloadUrl: { type: String },
     previewUrl: { type: String },
+    shippingAddress: {
+      fullName: { type: String, required: true },
+      email: { type: String, required: true },
+      phone: { type: String, required: true },
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      state: { type: String, required: true },
+      country: { type: String, required: true },
+      zipCode: { type: String, required: true },
+    },
   },
   { timestamps: true }
 );

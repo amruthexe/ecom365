@@ -39,8 +39,14 @@ export default function ProductCard({ product }: { product: IProduct }) {
               ]}
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
+
+            {/* Hover overlay with product name */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 group-hover:backdrop-blur-sm transition-all duration-300 rounded-xl">
+              <span className="text-white text-lg font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-2">
+                {product.name}
+              </span>
+            </div>
           </div>
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 rounded-xl" />
         </Link>
       </figure>
 
@@ -59,11 +65,9 @@ export default function ProductCard({ product }: { product: IProduct }) {
         <div className="card-actions justify-between items-center mt-2">
           <div className="flex flex-col">
             <span className="text-lg font-bold">
-              From ${lowestPrice.toFixed(2)}
+            ₹ {lowestPrice.toFixed(2)} /-
             </span>
-            <span className="text-xs text-base-content/50">
-              {product.variants.length} sizes available
-            </span>
+           
           </div>
 
           <Link

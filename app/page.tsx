@@ -1,30 +1,54 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import ImageGallery from "./components/ImageGallery";
+import { useEffect, useState } from "react";
 import { IProduct } from "@/models/Product";
 import { apiClient } from "@/lib/api-client";
+import Hero from "./components/Hero";
+import PopularProducts from "./components/PopularProducts";
+import Footer from "./components/Footer";
+import { Loader2 } from "lucide-react";
+import ProductReviews from "./components/ProductReviews";
 
-export default function Home() {
+export default function HomePage() {
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const data = await apiClient.getProducts();
-        setProducts(data);
+        // Get the first 8 products for the popular section
+        setProducts(data.slice(0, 8));
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">ImageKit Shop</h1>
-      <ImageGallery products={products} />
+    <main>
+      <Hero />
+      <PopularProducts products={products} />
+      <div className="flex justify-center my-8">
+        <a href="/products" className="btn bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-3 rounded-full font-semibold shadow-md transition">
+          View All Products
+        </a>
+      </div>
+      <ProductReviews />
+      <div className="h-12" />
+      <Footer />
     </main>
   );
 }

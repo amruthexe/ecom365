@@ -57,6 +57,7 @@ Order Details:
 - Order ID: ${order._id.toString().slice(-6)}
 - Product: ${order.productId.name}
 - Version: ${order.variant.type}
+- Quantity: ${order.quantity}
 - License: ${order.variant.license}
 - Price: $${order.amount.toFixed(2)}
 

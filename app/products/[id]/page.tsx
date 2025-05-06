@@ -234,21 +234,7 @@ const options = {
               )}
             </div>
 
-            <div className="text-sm text-base-content/60">
-              License: {defaultVariant.license} • Size:{" "}
-              {
-                IMAGE_VARIANTS[
-                  defaultVariant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
-                ].dimensions.width
-              }
-              x
-              {
-                IMAGE_VARIANTS[
-                  defaultVariant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
-                ].dimensions.height
-              }
-              px
-            </div>
+        
           </div>
         </div>
       </div>

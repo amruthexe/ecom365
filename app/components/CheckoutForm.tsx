@@ -61,7 +61,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
       <div className="bg-base-100 p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Checkout</h2>
         <div className="text-xl font-semibold mb-6">
-          Total Amount: ${totalAmount.toFixed(2)}
+          Total Amount: ₹ {totalAmount.toFixed(2)}
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -76,7 +76,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.fullName}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="John Doe"
+                placeholder="Full Name"
                 required
               />
             </div>
@@ -91,7 +91,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.email}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="john@example.com"
+                placeholder="Email"
                 required
               />
             </div>
@@ -106,7 +106,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.phone}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="+1234567890"
+                placeholder="Phone"
                 required
               />
             </div>
@@ -121,7 +121,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.address}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="123 Main St"
+                placeholder="Address"
                 required
               />
             </div>
@@ -136,7 +136,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.city}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="New York"
+                placeholder="City"
                 required
               />
             </div>
@@ -151,7 +151,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.state}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="NY"
+                placeholder="State"
                 required
               />
             </div>
@@ -166,7 +166,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.country}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="United States"
+                placeholder="Country"
                 required
               />
             </div>
@@ -181,7 +181,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 value={formData.zipCode}
                 onChange={handleChange}
                 className="input input-bordered"
-                placeholder="10001"
+                placeholder="ZIP Code"
                 required
               />
             </div>

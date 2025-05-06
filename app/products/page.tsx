@@ -76,8 +76,8 @@ export default function ProductsPage() {
                   <p className="text-white text-sm line-clamp-2 mb-2 min-h-[2.5em]">{product.description}</p>
                   <div className="flex justify-between items-center mt-2">
                     <span className="text-xl font-semibold text-red-600">₹{defaultVariant.price.toFixed(2)}</span>
-                    <span className="text-xs bg-red-900/80 text-white px-2 py-1 rounded-full">
-                      {defaultVariant.type} • {defaultVariant.license}
+                    <span className="text-xs bg-green-600/80 text-white px-4 py-2 rounded-full">
+                    View More Details 
                     </span>
                   </div>
                 </div>

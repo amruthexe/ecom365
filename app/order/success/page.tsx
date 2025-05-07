@@ -1,3 +1,4 @@
+// app/order/success/SuccessContent.tsx
 "use client";
 
 import Image from "next/image";
@@ -15,7 +16,7 @@ export default function SuccessPage() {
 
   return (
     <div className="p-8 text-center">
-         <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-6">
         <Image src="/logo.png" alt="Company Logo" width={120} height={60} />
       </div>
       <h1 className="text-3xl font-bold text-green-600">Payment Successful!</h1>

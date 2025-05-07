@@ -12,24 +12,32 @@ if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
+async function connectWithRetry(retries: number = 3, delay: number = 2000): Promise<void> {
+  try {
+    await mongoose.connect(MONGODB_URI!, {
+      bufferCommands: true,  // Allow buffering commands if MongoDB is not connected
+      maxPoolSize: 10,       // Connection pool size, you can increase this based on your traffic
+      serverSelectionTimeoutMS: 5000, // Increase timeout to handle slow network
+      socketTimeoutMS: 45000, // Timeout for socket operations
+    });
+    console.log("MongoDB connected");
+  } catch (err) {
+    if (retries === 0) {
+      console.error("MongoDB connection failed after multiple retries:", err);
+      throw new Error("Failed to connect to MongoDB");
+    } else {
+      console.log(`Retrying MongoDB connection, attempts left: ${retries}`);
+      await new Promise(resolve => setTimeout(resolve, delay)); // Delay before retrying
+      await connectWithRetry(retries - 1, delay); // Retry connection
+    }
+  }
+}
+
 export async function connectToDatabase() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: true,
-      maxPoolSize: 10,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI!, opts)
-      .then((mongooseInstance) => {
-        console.log("MongoDB connected");
-        return mongooseInstance.connection;
-      })
-      .catch((err) => {
-        console.error("MongoDB connection error:", err);
-        throw err;
-      });
+    cached.promise = connectWithRetry().then(() => mongoose.connection);
   }
 
   cached.conn = await cached.promise;

@@ -45,6 +45,7 @@ export default function Header() {
           <Link href="/team" className="hover:text-green-600 transition-colors">Team</Link>
           <Link href="/about" className="hover:text-green-600 transition-colors">About Us</Link>
           <Link href="/orders" className="hover:text-green-600 transition-colors">My Orders</Link>
+          <Link href="/policies" className="hover:text-green-600 transition-colors">Policies</Link>
         </nav>
 
         {/* User Dropdown */}

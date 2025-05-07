@@ -53,7 +53,7 @@ export default function ProductPage() {
   const handlePurchase = async (variant: ImageVariant, shippingAddress: any) => {
     if (!session) {
       showNotification("Please login to make a purchase", "error");
-      router.push("/login");
+      router.push("/register"); // Redirect to the registration page if not logged in
       return;
     }
   
@@ -212,14 +212,19 @@ export default function ProductPage() {
 
               <div className="text-right">
                 <div className="text-sm text-base-content/70">Total Price</div>
-              <span className="text-2xl font-bold">
-                  ₹{totalPrice.toFixed(2)}
-              </span>
+                <span className="text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
               </div>
 
               <button
                 className="btn bg-green-600 text-white btn-lg w-full"
-                onClick={() => setShowCheckout(true)}
+                onClick={() => {
+                  if (!session) {
+                    // Redirect to registration page if not logged in
+                    router.push("/register");
+                    return;
+                  }
+                  setShowCheckout(true);
+                }}
               >
                 Buy Now
               </button>
@@ -235,8 +240,6 @@ export default function ProductPage() {
                 />
               )}
             </div>
-
-        
           </div>
         </div>
       </div>

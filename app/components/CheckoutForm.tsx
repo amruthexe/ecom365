@@ -23,9 +23,10 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.address || 
+
+    console.log("Form Data:", formData); // Debugging the form data to ensure it's correct
+
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.address ||
         !formData.city || !formData.state || !formData.country || !formData.zipCode) {
       showNotification("Please fill in all fields", "error");
       return;
@@ -63,7 +64,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
         <div className="text-xl font-semibold mb-6">
           Total Amount: ₹ {totalAmount.toFixed(2)}
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="form-control">
@@ -206,4 +207,4 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
       </div>
     </div>
   );
-} 
+}

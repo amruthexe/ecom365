@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import ProductReviews from "./components/ProductReviews";
 import Link from "next/link";
 
+
 export default function HomePage() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ export default function HomePage() {
         </Link>
       </div>
       <ProductReviews />
+    
       <div className="h-12" />
       <Footer />
     </main>

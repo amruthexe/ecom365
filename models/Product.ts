@@ -41,7 +41,7 @@ const imageVariantSchema = new Schema<ImageVariant>({
   type: {
     type: String,
     required: true,
-    enum: ["SQUARE", "WIDE", "PORTRAIT"],
+    // enum: ["SQUARE", "WIDE", "PORTRAIT"],
   },
   price: {
     type: Number,

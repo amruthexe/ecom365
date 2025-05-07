@@ -4,9 +4,8 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import FileUpload from "./FileUpload";
 import { IKUploadResponse } from "imagekitio-next/dist/types/components/IKUpload/props";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { useNotification } from "./Notification";
-import { IMAGE_VARIANTS, ImageVariantType } from "@/models/Product";
 import { apiClient, ProductFormData } from "@/lib/api-client";
 
 export default function AdminProductForm() {
@@ -26,15 +25,15 @@ export default function AdminProductForm() {
       imageUrl: "",
       variants: [
         {
-          type: "SQUARE" as ImageVariantType,
-          price: 9.99,
-          license: "personal",
+          type: "SQUARE",  // Default type
+          license: "personal",  // Default license
+          price: 9.99,  // Default price
         },
       ],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, remove } = useFieldArray({
     control,
     name: "variants",
   });
@@ -56,9 +55,9 @@ export default function AdminProductForm() {
       setValue("imageUrl", "");
       setValue("variants", [
         {
-          type: "SQUARE" as ImageVariantType,
-          price: 9.99,
-          license: "personal",
+          type: "SQUARE",  // Default type
+          license: "personal",  // Default license
+          price: 9.99,  // Default price
         },
       ]);
     } catch (error) {
@@ -109,35 +108,9 @@ export default function AdminProductForm() {
 
       {fields.map((field, index) => (
         <div key={field.id} className="card bg-base-200 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="form-control">
-              <label className="label">Size & Aspect Ratio</label>
-              <select
-                className="select select-bordered"
-                {...register(`variants.${index}.type`)}
-              >
-                {Object.entries(IMAGE_VARIANTS).map(([key, value]) => (
-                  <option key={key} value={value.type}>
-                    {value.label} ({value.dimensions.width}x
-                    {value.dimensions.height})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-control">
-              <label className="label">License</label>
-              <select
-                className="select select-bordered"
-                {...register(`variants.${index}.license`)}
-              >
-                <option value="personal">Personal Use</option>
-                <option value="commercial">Commercial Use</option>
-              </select>
-            </div>
-
-            <div className="form-control">
-              <label className="label">Price ($)</label>
+              <label className="label">Price (₹)</label>
               <input
                 type="number"
                 step="0.01"
@@ -169,21 +142,6 @@ export default function AdminProductForm() {
           </div>
         </div>
       ))}
-
-      <button
-        type="button"
-        className="btn btn-outline btn-block"
-        onClick={() =>
-          append({
-            type: "SQUARE" as ImageVariantType,
-            price: 9.99,
-            license: "personal",
-          })
-        }
-      >
-        <Plus className="w-4 h-4 mr-2" />
-        Add Variant
-      </button>
 
       <button
         type="submit"

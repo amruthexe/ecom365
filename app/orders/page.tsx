@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { IOrder } from "@/models/Order";
-import { Loader2, Download } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { IKImage } from "imagekitio-next";
 import { IMAGE_VARIANTS } from "@/models/Product";
 import { apiClient } from "@/lib/api-client";
@@ -38,7 +38,7 @@ export default function OrdersPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">My Orders</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">My Orders</h1>
       <div className="space-y-6">
         {orders.map((order) => {
           const variantDimensions =
@@ -51,15 +51,14 @@ export default function OrdersPage() {
           return (
             <div
               key={order._id?.toString()}
-              className="card bg-base-100 shadow-xl"
+              className="card bg-base-100 shadow-xl rounded-lg overflow-hidden"
             >
-              <div className="card-body">
-                <div className="flex flex-col md:flex-row gap-6">
+              <div className="card-body p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row gap-6">
                   {/* Preview Image - Low Quality */}
                   <div
-                    className="relative rounded-lg overflow-hidden bg-base-200"
+                    className="relative rounded-lg overflow-hidden bg-base-200 w-full sm:w-48"
                     style={{
-                      width: "200px",
                       aspectRatio: `${variantDimensions.width} / ${variantDimensions.height}`,
                     }}
                   >
@@ -67,15 +66,13 @@ export default function OrdersPage() {
                       urlEndpoint={process.env.NEXT_PUBLIC_URL_ENDPOINT}
                       path={product.imageUrl}
                       alt={`Order ${order._id?.toString().slice(-6)}`}
-                      transformation={[
-                        {
-                          quality: "60",
-                          width: variantDimensions.width.toString(),
-                          height: variantDimensions.height.toString(),
-                          cropMode: "extract",
-                          focus: "center",
-                        },
-                      ]}
+                      transformation={[{
+                        quality: "60",
+                        width: variantDimensions.width.toString(),
+                        height: variantDimensions.height.toString(),
+                        cropMode: "extract",
+                        focus: "center",
+                      }]}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -83,22 +80,20 @@ export default function OrdersPage() {
 
                   {/* Order Details */}
                   <div className="flex-grow">
-                    <div className="flex justify-between items-start">
-                      <div>
+                    <div className="flex flex-col sm:flex-row justify-between items-start">
+                      <div className="mb-4 sm:mb-0">
                         <h2 className="text-xl font-bold mb-2">
                           Order #{order._id?.toString().slice(-6)}
                         </h2>
                         <div className="space-y-1 text-base-content/70">
-                        Payment Successful
+                          <p>Payment Successful</p>
                           <p>
-                          Quantity :{" "}
-                            <span className="capitalize">
-                              {order.quantity}
-                            </span>
+                            Quantity:{" "}
+                            <span className="capitalize">{order.quantity}</span>
                           </p>
-                          
+
                           <p>
-                          Shipping Status:{" "}
+                            Shipping Status:{" "}
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                 order.status === "completed"
@@ -116,21 +111,17 @@ export default function OrdersPage() {
 
                       <div className="text-right">
                         <p className="text-2xl font-bold mb-4">
-                        ₹ {order.amount}
+                          ₹ {order.amount}
                         </p>
-                        {order.status === "completed" && (
-                          <a
-                            href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center/${product.imageUrl}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-primary gap-2"
-                            download={`image-${order._id
-                              ?.toString()
-                              .slice(-6)}.jpg`}
+                        {order.status === "pending" && (
+                          <button
+                            onClick={() =>
+                              window.open(`/api/invoice?orderId=${order._id}`, "_blank")
+                            }
+                            className="mt-4 bg-green-600 text-white px-6 py-2 rounded shadow"
                           >
-                            <Download className="w-4 h-4" />
-                            Download High Quality
-                          </a>
+                            Download Invoice
+                          </button>
                         )}
                       </div>
                     </div>

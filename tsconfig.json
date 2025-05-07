@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "scripts/**/*.ts"
-  ],
+, "app/api/invoice/route.ts"  ],
   "exclude": ["node_modules"]
 }

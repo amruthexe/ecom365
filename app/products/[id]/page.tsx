@@ -51,62 +51,64 @@ export default function ProductPage() {
   }, [params?.id]);
 
   const handlePurchase = async (variant: ImageVariant, shippingAddress: any) => {
-    console.log('handlePurchase called', { variant, shippingAddress });
     if (!session) {
       showNotification("Please login to make a purchase", "error");
       router.push("/login");
       return;
     }
-
+  
     if (!product?._id) {
       showNotification("Invalid product", "error");
       return;
     }
-
+  
     try {
-      console.log('Creating order...');
-      const { orderId, amount } = await apiClient.createOrder({
+      const { orderId, amount, dbOrderId } = await apiClient.createOrder({
         productId: product._id,
         variant,
         quantity,
         shippingAddress,
       });
-      console.log('Order created', { orderId, amount });
-
-const options = {
-  key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: amount,
-  currency: "INR",
-  name: "vevvion Shop",
-  description: `${product.name} - ${variant.type} Version x${quantity}`,
-  order_id: orderId,
-  handler: function () {
-    showNotification("Payment successful!", "success");
-    router.push("/orders");
-  },
-  prefill: {
+  
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount,
+        currency: "INR",
+        name: "vevvion Shop",
+        description: `${product.name} - ${variant.type} Version x${quantity}`,
+        order_id: orderId,
+        handler: function () {
+          showNotification("Payment successful!", "success");
+          // ✅ Redirect to order success page with orderId for invoice download
+          router.push(`/order/success?orderId=${dbOrderId}`);
+        },
+        prefill: {
           email: shippingAddress.email,
           contact: shippingAddress.phone,
           name: shippingAddress.fullName,
-  },
-};
-
+        },
+        theme: {
+          color: "#16a34a",
+        },
+      };
+  
       if (!(window as any).Razorpay) {
-        console.error('Razorpay script not loaded');
-        showNotification('Razorpay script not loaded', 'error');
+        console.error("Razorpay script not loaded");
+        showNotification("Razorpay script not loaded", "error");
         return;
       }
-      console.log('Opening Razorpay...', options);
+  
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.error('Error in handlePurchase:', error);
+      console.error("Error in handlePurchase:", error);
       showNotification(
         error instanceof Error ? error.message : "Payment failed",
         "error"
       );
     }
   };
+  
 
   const getTransformation = (variantType: ImageVariantType) => {
     const variant = IMAGE_VARIANTS[variantType];

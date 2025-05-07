@@ -76,14 +76,20 @@ class ApiClient {
     const sanitizedOrderData = {
       ...orderData,
       productId: orderData.productId.toString(),
-      quantity: orderData.quantity
+      quantity: orderData.quantity,
     };
-
-    return this.fetch<{ orderId: string; amount: number }>("/orders", {
+  
+    return this.fetch<{
+      orderId: string;
+      amount: number;
+      currency: string;
+      dbOrderId: string;
+    }>("/orders", {
       method: "POST",
       body: sanitizedOrderData,
     });
   }
+  
 }
 
 export const apiClient = new ApiClient();

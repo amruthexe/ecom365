@@ -89,18 +89,16 @@ export default function OrdersPage() {
                           Order #{order._id?.toString().slice(-6)}
                         </h2>
                         <div className="space-y-1 text-base-content/70">
+                        Payment Successful
                           <p>
-                            Resolution: {variantDimensions.width} x{" "}
-                            {variantDimensions.height}px
-                          </p>
-                          <p>
-                            License Type:{" "}
+                          Quantity :{" "}
                             <span className="capitalize">
-                              {order.variant.license}
+                              {order.quantity}
                             </span>
                           </p>
+                          
                           <p>
-                            Status:{" "}
+                          Shipping Status:{" "}
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                 order.status === "completed"
@@ -118,7 +116,7 @@ export default function OrdersPage() {
 
                       <div className="text-right">
                         <p className="text-2xl font-bold mb-4">
-                        ₹ {order.amount.toFixed(2)}
+                        ₹ {order.amount}
                         </p>
                         {order.status === "completed" && (
                           <a

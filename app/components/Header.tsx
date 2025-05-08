@@ -3,16 +3,23 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import {  UserCircle } from "lucide-react";
+import { UserCircle, ShoppingCart, User, LogOut } from "lucide-react";
 import { useNotification } from "./Notification";
+import { useCart } from "./CartContext";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
-  const { data: session } = useSession();
+  const pathname = usePathname();
+  const { data: session, status } = useSession();
   const { showNotification } = useNotification();
+  const { items, clearCart } = useCart();
+
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleSignOut = async () => {
     try {
       await signOut();
+      clearCart(); // Clear cart when user signs out
       showNotification("Signed out successfully", "success");
     } catch {
       showNotification("Failed to sign out", "error");
@@ -20,131 +27,179 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-black text-white sticky top-0 z-50 shadow-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-2">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2"
-          onClick={() => showNotification("vevvion", "info")}
-        >
-          <Image
-            src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/image.png"
-            alt="Vevvion Logo"
-            width={200}
-            height={80}
-            className="rounded-md"
-            priority
-          />
-        </Link>
-
-        {/* Navigation Links */}
-        <nav className="hidden md:flex gap-6 text-white text-2xl font-medium">
-          <Link href="/products" className="hover:text-green-600 transition-colors">
-            All Products
-          </Link>
-          <Link href="/team" className="hover:text-green-600 transition-colors">
-            Team
-          </Link>
-          <Link href="/about" className="hover:text-green-600 transition-colors">
-            About Us
-          </Link>
-          <Link href="/orders" className="hover:text-green-600 transition-colors">
-            My Orders
-          </Link>
-          <Link href="/policies" className="hover:text-green-600 transition-colors">
-            Policies
-          </Link>
-        </nav>
-
-        {/* User Dropdown */}
-        <div className="relative">
-          <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className=" text-white"
-            >
-              <UserCircle className="w-12 h-12 mt-8 text-green-600" />
+    <header className="bg-black shadow-md">
+      <div className="container mx-auto px-4">
+        <div className="navbar">
+          <div className="navbar-start">
+            <div className="dropdown">
+              <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h8m-8 6h16"
+                  />
+                </svg>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>
+                  <Link
+                    href="/products"
+                    className={pathname === "/products" ? "active" : ""}
+                  >
+                    Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/about"
+                    className={pathname === "/about" ? "active" : ""}
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/team"
+                    className={pathname === "/team" ? "active" : ""}
+                  >
+                    Team
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/policies"
+                    className={pathname === "/policies" ? "active" : ""}
+                  >
+                    Policies
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/terms"
+                    className={pathname === "/terms" ? "active" : ""}
+                  >
+                    Terms
+                  </Link>
+                </li>
+              </ul>
             </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content mt-3 z-[1] shadow bg-white text-black rounded-box w-64 py-2"
-            >
-              {/* Common Links */}
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/image.png"
+                alt="Vevvion Logo"
+                width={120}
+                height={40}
+                className="rounded-md"
+                priority
+              />
+            </Link>
+          </div>
+          <div className="navbar-center hidden lg:flex">
+            <ul className="menu menu-horizontal px-1">
               <li>
                 <Link
-                  href="/policies"
-                  className="px-4 py-2 hover:bg-green-600 block w-full"
+                  href="/products"
+                  className={pathname === "/products" ? "active" : ""}
                 >
-                  Policies
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className={pathname === "/about" ? "active" : ""}
+                >
+                  About
                 </Link>
               </li>
               <li>
                 <Link
                   href="/team"
-                  className="px-4 py-2 hover:bg-green-600 block w-full"
+                  className={pathname === "/team" ? "active" : ""}
                 >
                   Team
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/about"
-                  className="px-4 py-2 hover:bg-green-600 block w-full"
+                  href="/policies"
+                  className={pathname === "/policies" ? "active" : ""}
                 >
-                  About Us
+                  Policies
                 </Link>
               </li>
-
+              <li>
+                <Link
+                  href="/terms"
+                  className={pathname === "/terms" ? "active" : ""}
+                >
+                  Terms
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div className="navbar-end">
+            <div className="flex items-center gap-4">
+              {status === "authenticated" && (
+                <Link href="/cart" className="relative">
+                  <ShoppingCart className="w-6 h-6 text-green-600" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+              )}
               {session ? (
-                <>
-                  <li className="px-4 py-1 text-sm opacity-70">
-                    {session.user?.email?.split("@")[0]}
-                  </li>
-                  <div className="divider my-1"></div>
-                  {session.user?.role === "admin" && (
+                <div className="dropdown dropdown-end">
+                  <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                    <User className="w-6 h-6 text-green-600" />
+                  </div>
+                  <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li className="px-4 py-2 text-sm opacity-70">
+                      {session.user?.email?.split("@")[0]}
+                    </li>
+                    <div className="divider my-1"></div>
+                    {session.user?.role === "admin" && (
+                      <li>
+                        <Link href="/admin" className="text-green-600">
+                          Admin Dashboard
+                        </Link>
+                      </li>
+                    )}
                     <li>
-                      <Link
-                        href="/admin"
-                        className="px-4 py-2 hover:bg-green-600 block w-full"
-                        onClick={() => showNotification("Welcome to Admin Dashboard", "info")}
-                      >
-                        Admin Dashboard
+                      <Link href="/orders" className="text-green-600">
+                        My Orders
                       </Link>
                     </li>
-                  )}
-                  <li>
-                    <Link
-                      href="/orders"
-                      className="px-4 py-2 hover:bg-green-600 block w-full"
-                    >
-                      My Orders
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleSignOut}
-                      className="px-4 py-2 text-error hover:bg-green-600 w-full text-left"
-                    >
-                      Sign Out
-                    </button>
-                  </li>
-                </>
+                    <li>
+                      <button
+                        onClick={handleSignOut}
+                        className="text-error flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               ) : (
-                <>
-                  <li>
-                    <Link
-                      href="/login"
-                      className="px-4 py-2 block  hover:bg-green-600 w-full"
-                      onClick={() => showNotification("Please sign in to continue", "info")}
-                    >
-                      Login
-                    </Link>
-                  </li>
-                </>
+                <Link href="/login" className="btn btn-primary">
+                  Login
+                </Link>
               )}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -33,7 +33,10 @@ if (
   pathname === "/team" ||
   pathname === "/about" ||
   pathname === "/orders" ||
-  pathname ==="/policies"
+  pathname ==="/policies"||
+  pathname === "/cart" ||
+  pathname === "/checkout"||
+  pathname === "/terms"
 ) {
   return true;
 }

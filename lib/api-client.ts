@@ -5,9 +5,11 @@ import { Types } from "mongoose";
 export type ProductFormData = Omit<IProduct, "_id">;
 
 export interface CreateOrderData {
-  productId: Types.ObjectId | string;
-  variant: ImageVariant;
-  quantity: number;
+  items: Array<{
+    productId: Types.ObjectId | string;
+    variant: ImageVariant;
+    quantity: number;
+  }>;
   shippingAddress: {
     fullName: string;
     email: string;
@@ -70,26 +72,25 @@ class ApiClient {
     return this.fetch<IOrder[]>("/orders/user");
   }
 
-  
-
   async createOrder(orderData: CreateOrderData) {
     const sanitizedOrderData = {
       ...orderData,
-      productId: orderData.productId.toString(),
-      quantity: orderData.quantity,
+      items: orderData.items.map(item => ({
+        ...item,
+        productId: item.productId.toString(),
+      })),
     };
   
     return this.fetch<{
       orderId: string;
       amount: number;
       currency: string;
-      dbOrderId: string;
+      dbOrderIds: string[];
     }>("/orders", {
       method: "POST",
       body: sanitizedOrderData,
     });
   }
-  
 }
 
 export const apiClient = new ApiClient();

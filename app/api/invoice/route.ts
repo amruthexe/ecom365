@@ -135,7 +135,10 @@ export async function GET(req: NextRequest) {
         React.createElement(View, { key: "payment", style: styles.tableRow }, [
           React.createElement(Text, { style: styles.label }, "Payment From:"),
           React.createElement(Text, { style: styles.value }, "RazorPay"),
-        ]),
+        ]),React.createElement(View, { key: "gst", style: styles.tableRow }, [
+          React.createElement(Text, { style: styles.label }, "GST Number:"),
+          React.createElement(Text, { style: styles.value }, "29AAICV6290Q1Z8"),
+        ])
       ]),
 
       // Centered Shipping Address

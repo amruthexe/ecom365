@@ -9,11 +9,12 @@ import {
 } from "@/models/Product";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ShoppingCart } from "lucide-react";
 import { useNotification } from "@/app/components/Notification";
 import { useSession } from "next-auth/react";
 import { apiClient } from "@/lib/api-client";
 import CheckoutForm from "@/app/components/CheckoutForm";
+import { useCart } from "@/app/components/CartContext";
 
 export default function ProductPage() {
   const params = useParams();
@@ -25,6 +26,7 @@ export default function ProductPage() {
   const { showNotification } = useNotification();
   const router = useRouter();
   const { data: session } = useSession();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -53,7 +55,7 @@ export default function ProductPage() {
   const handlePurchase = async (variant: ImageVariant, shippingAddress: any) => {
     if (!session) {
       showNotification("Please login to make a purchase", "error");
-      router.push("/register"); // Redirect to the registration page if not logged in
+      router.push("/register");
       return;
     }
   
@@ -63,10 +65,12 @@ export default function ProductPage() {
     }
   
     try {
-      const { orderId, amount, dbOrderId } = await apiClient.createOrder({
-        productId: product._id,
-        variant,
-        quantity,
+      const { orderId, amount, dbOrderIds } = await apiClient.createOrder({
+        items: [{
+          productId: product._id.toString(),
+          variant,
+          quantity
+        }],
         shippingAddress,
       });
   
@@ -79,8 +83,7 @@ export default function ProductPage() {
         order_id: orderId,
         handler: function () {
           showNotification("Payment successful!", "success");
-          // ✅ Redirect to order success page with orderId for invoice download
-          router.push(`/order/success?orderId=${dbOrderId}`);
+          router.push(`/order/success?orderId=${dbOrderIds[0]}`);
         },
         prefill: {
           email: shippingAddress.email,
@@ -108,7 +111,36 @@ export default function ProductPage() {
       );
     }
   };
-  
+
+  const handleAddToCart = () => {
+    if (!session) {
+      showNotification("Please login to add items to cart", "error");
+      router.push("/register");
+      return;
+    }
+
+    if (!product?._id) {
+      showNotification("Product not found", "error");
+      return;
+    }
+
+    const defaultVariant = product.variants[0];
+    if (!defaultVariant) {
+      showNotification("No variant available", "error");
+      return;
+    }
+
+    addToCart({
+      product: {
+        _id: product._id.toString(),
+        name: product.name,
+        description: product.description,
+        imageUrl: product.imageUrl
+      },
+      variant: defaultVariant,
+      quantity
+    });
+  };
 
   const getTransformation = (variantType: ImageVariantType) => {
     const variant = IMAGE_VARIANTS[variantType];
@@ -123,7 +155,6 @@ export default function ProductPage() {
     ];
   };
 
-  // Calculate total price whenever quantity or variant changes
   const calculateTotalPrice = (variant: ImageVariant) => {
     return variant.price * quantity;
   };
@@ -189,7 +220,7 @@ export default function ProductPage() {
             <p className="text-base-content/80 text-lg">{product.description}</p>
           </div>
 
-          {/* Quantity & Buy Now */}
+          {/* Quantity & Buttons */}
           <div className="space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-3">
@@ -214,12 +245,21 @@ export default function ProductPage() {
                 <div className="text-sm text-base-content/70">Total Price</div>
                 <span className="text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
               </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                className="btn btn-primary btn-lg flex-1 gap-2"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                Add to Cart
+              </button>
 
               <button
-                className="btn bg-green-600 text-white btn-lg w-full"
+                className="btn bg-green-600 text-white btn-lg flex-1"
                 onClick={() => {
                   if (!session) {
-                    // Redirect to registration page if not logged in
                     router.push("/register");
                     return;
                   }
@@ -228,21 +268,18 @@ export default function ProductPage() {
               >
                 Buy Now
               </button>
-
-              {showCheckout && (
-                <CheckoutForm
-                  totalAmount={totalPrice}
-                  onSubmit={(shippingAddress) => {
-                    handlePurchase(defaultVariant, shippingAddress);
-                    setShowCheckout(false);
-                  }}
-                  onCancel={() => setShowCheckout(false)}
-                />
-              )}
             </div>
           </div>
         </div>
       </div>
+
+      {showCheckout && (
+        <CheckoutForm
+          totalAmount={totalPrice}
+          onSubmit={(shippingAddress) => handlePurchase(defaultVariant, shippingAddress)}
+          onCancel={() => setShowCheckout(false)}
+        />
+      )}
     </div>
   );
 }

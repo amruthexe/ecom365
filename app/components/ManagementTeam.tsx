@@ -10,7 +10,7 @@ export default function ManagementTeam() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Lazarus Yabes */}
         <div className="flex flex-col items-center">
-          <div className="rounded-full overflow-hidden w-48 h-48 mb-4">
+          <div className=" overflow-hidden w-48 h-48 mb-4">
             <Image
               src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/h2.jpg" // Replace with actual image path
               alt="Lazarus Yabes"
@@ -28,7 +28,7 @@ export default function ManagementTeam() {
 
         {/* Sam Vijay Praveen */}
         <div className="flex flex-col items-center">
-          <div className="rounded-full overflow-hidden w-48 h-48 mb-4">
+          <div className=" overflow-hidden w-40 h-40 mb-8">
             <Image
               src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/h1.jpg" // Replace with actual image path
               alt="Sam Vijay Praveen"

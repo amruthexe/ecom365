@@ -35,16 +35,19 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { productId, variant, quantity = 1, shippingAddress } = body;
+    const { items, shippingAddress } = body;
 
-    if (!productId || !variant?.price || !variant?.type || !variant?.license || !shippingAddress) {
+    if (!items || !Array.isArray(items) || items.length === 0 || !shippingAddress) {
       return NextResponse.json({ error: "Invalid input data" }, { status: 400 });
     }
 
     await connectWithRetry(); // Retry connection if needed
 
-    // Calculate total amount
-    const totalAmount = variant.price * quantity;
+    // Calculate total amount for all items
+    const totalAmount = items.reduce((sum, item) => {
+      return sum + (item.variant.price * item.quantity);
+    }, 0);
+
     const amountInPaise = Math.round(totalAmount * 100);
 
     // Create order in Razorpay
@@ -53,31 +56,39 @@ export async function POST(req: NextRequest) {
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {
-        productId: productId.toString(),
-        quantity: quantity.toString(),
+        items: JSON.stringify(items.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          variant: item.variant.type
+        }))),
+        totalItems: items.reduce((sum, item) => sum + item.quantity, 0)
       },
     }).catch((err) => {
       console.error("Error while creating Razorpay order:", err);
       throw new Error("Failed to create Razorpay order");
     });
 
-    // Save order in MongoDB
-    const newOrder = await Order.create({
-      userId: session.user.id,
-      productId,
-      variant,
-      quantity,
-      razorpayOrderId: razorpayOrder.id,
-      amount: totalAmount,
-      status: "pending",
-      shippingAddress,
-    });
+    // Create orders in MongoDB for each item
+    const orderPromises = items.map(item => 
+      Order.create({
+        userId: session.user.id,
+        productId: item.productId,
+        variant: item.variant,
+        quantity: item.quantity,
+        razorpayOrderId: razorpayOrder.id,
+        amount: item.variant.price * item.quantity,
+        status: "pending",
+        shippingAddress,
+      })
+    );
+
+    const orders = await Promise.all(orderPromises);
 
     return NextResponse.json({
       orderId: razorpayOrder.id,
       amount: amountInPaise,
       currency: razorpayOrder.currency,
-      dbOrderId: newOrder._id,
+      dbOrderIds: orders.map(order => order._id),
     });
   } catch (error) {
     console.error("Error creating order:", error);

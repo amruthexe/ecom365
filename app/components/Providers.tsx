@@ -24,13 +24,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <SessionProvider refetchInterval={5 * 60}>
       <NotificationProvider>
         <CartProvider>
-          <ImageKitProvider
-            publicKey={publicKey}
-            urlEndpoint={urlEndpoint}
-            authenticator={authenticator}
-          >
-            {children}
-          </ImageKitProvider>
+        <ImageKitProvider
+          publicKey={publicKey}
+          urlEndpoint={urlEndpoint}
+          authenticator={authenticator}
+        >
+          {children}
+        </ImageKitProvider>
         </CartProvider>
       </NotificationProvider>
     </SessionProvider>

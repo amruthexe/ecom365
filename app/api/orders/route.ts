@@ -10,15 +10,15 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET!,
 });
 
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 2000; // Delay in milliseconds (2 seconds)
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 3000; // 3 seconds
 
 async function connectWithRetry(retries: number = 0) {
   try {
     await connectToDatabase();
   } catch (error) {
     if (retries < MAX_RETRIES) {
-      console.log(`Retrying connection... attempt ${retries + 1}`);
+      console.log(`Retrying database connection... attempt ${retries + 1}`);
       await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
       await connectWithRetry(retries + 1);
     } else {
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid input data" }, { status: 400 });
     }
 
-    await connectWithRetry(); // Retry connection if needed
+    await connectWithRetry();
 
     // Calculate total amount for all items
     const totalAmount = items.reduce((sum, item) => {
@@ -50,39 +50,52 @@ export async function POST(req: NextRequest) {
 
     const amountInPaise = Math.round(totalAmount * 100);
 
-    // Create order in Razorpay
-    const razorpayOrder = await razorpay.orders.create({
-      amount: amountInPaise,
-      currency: "INR",
-      receipt: `receipt_${Date.now()}`,
-      notes: {
-        items: JSON.stringify(items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          variant: item.variant.type
-        }))),
-        totalItems: items.reduce((sum, item) => sum + item.quantity, 0)
-      },
-    }).catch((err) => {
+    // Create order in Razorpay with timeout
+    const razorpayOrder = await Promise.race([
+      razorpay.orders.create({
+        amount: amountInPaise,
+        currency: "INR",
+        receipt: `receipt_${Date.now()}`,
+        notes: {
+          items: JSON.stringify(items.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            variant: item.variant.type
+          }))),
+          totalItems: items.reduce((sum, item) => sum + item.quantity, 0)
+        },
+      }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Razorpay order creation timed out")), 30000)
+      )
+    ]).catch((err) => {
       console.error("Error while creating Razorpay order:", err);
-      throw new Error("Failed to create Razorpay order");
+      throw new Error("Failed to create Razorpay order. Please try again.");
     });
 
-    // Create orders in MongoDB for each item
+    // Create orders in MongoDB for each item with timeout
     const orderPromises = items.map(item => 
-      Order.create({
-        userId: session.user.id,
-        productId: item.productId,
-        variant: item.variant,
-        quantity: item.quantity,
-        razorpayOrderId: razorpayOrder.id,
-        amount: item.variant.price * item.quantity,
-        status: "pending",
-        shippingAddress,
-      })
+      Promise.race([
+        Order.create({
+          userId: session.user.id,
+          productId: item.productId,
+          variant: item.variant,
+          quantity: item.quantity,
+          razorpayOrderId: razorpayOrder.id,
+          amount: item.variant.price * item.quantity,
+          status: "pending",
+          shippingAddress,
+        }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Database operation timed out")), 30000)
+        )
+      ])
     );
 
-    const orders = await Promise.all(orderPromises);
+    const orders = await Promise.all(orderPromises).catch((err) => {
+      console.error("Error creating orders in database:", err);
+      throw new Error("Failed to create order in database. Please try again.");
+    });
 
     return NextResponse.json({
       orderId: razorpayOrder.id,
@@ -92,6 +105,8 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error creating order:", error);
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : "Failed to create order. Please try again." 
+    }, { status: 500 });
   }
 }

@@ -23,6 +23,7 @@ export default function ProductPage() {
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const { showNotification } = useNotification();
   const router = useRouter();
   const { data: session } = useSession();
@@ -63,8 +64,26 @@ export default function ProductPage() {
       showNotification("Invalid product", "error");
       return;
     }
-  
+
+    setIsProcessingPayment(true);
+
     try {
+      // Check if Razorpay script is loaded
+      if (!(window as any).Razorpay) {
+        console.error("Razorpay script not loaded. Attempting to load...");
+        // Try to load the script dynamically
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.onerror = () => {
+          console.error("Failed to load Razorpay script");
+          showNotification("Payment system is not available. Please try again later.", "error");
+          setIsProcessingPayment(false);
+        };
+        document.body.appendChild(script);
+        return;
+      }
+
       const { orderId, amount, dbOrderIds } = await apiClient.createOrder({
         items: [{
           productId: product._id.toString(),
@@ -93,11 +112,17 @@ export default function ProductPage() {
         theme: {
           color: "#16a34a",
         },
+        modal: {
+          ondismiss: function() {
+            setIsProcessingPayment(false);
+          }
+        }
       };
   
       if (!(window as any).Razorpay) {
-        console.error("Razorpay script not loaded");
-        showNotification("Razorpay script not loaded", "error");
+        console.error("Razorpay script not loaded after order creation");
+        showNotification("Payment system is not available. Please try again later.", "error");
+        setIsProcessingPayment(false);
         return;
       }
   
@@ -106,9 +131,10 @@ export default function ProductPage() {
     } catch (error) {
       console.error("Error in handlePurchase:", error);
       showNotification(
-        error instanceof Error ? error.message : "Payment failed",
+        error instanceof Error ? error.message : "Payment failed. Please try again.",
         "error"
       );
+      setIsProcessingPayment(false);
     }
   };
 
@@ -276,8 +302,19 @@ export default function ProductPage() {
       {showCheckout && (
         <CheckoutForm
           totalAmount={totalPrice}
-          onSubmit={(shippingAddress) => handlePurchase(defaultVariant, shippingAddress)}
-          onCancel={() => setShowCheckout(false)}
+          onSubmit={async (shippingAddress) => {
+            try {
+              await handlePurchase(defaultVariant, shippingAddress);
+            } catch (error) {
+              console.error("Error in checkout:", error);
+              setIsProcessingPayment(false);
+            }
+          }}
+          onCancel={() => {
+            setShowCheckout(false);
+            setIsProcessingPayment(false);
+          }}
+          isProcessing={isProcessingPayment}
         />
       )}
     </div>

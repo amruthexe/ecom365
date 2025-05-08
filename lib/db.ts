@@ -12,34 +12,51 @@ if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
-async function connectWithRetry(retries: number = 3, delay: number = 2000): Promise<void> {
+async function connectWithRetry(retries: number = 5, delay: number = 3000): Promise<void> {
   try {
+    // Use the connection options directly in `mongoose.connect()`
     await mongoose.connect(MONGODB_URI!, {
-      bufferCommands: true,  // Allow buffering commands if MongoDB is not connected
-      maxPoolSize: 10,       // Connection pool size, you can increase this based on your traffic
-      serverSelectionTimeoutMS: 5000, // Increase timeout to handle slow network
-      socketTimeoutMS: 45000, // Timeout for socket operations
+      bufferCommands: true,
+      maxPoolSize: 20, // Increased for production
+      serverSelectionTimeoutMS: 60000, // Increased to 60 seconds
+      connectTimeoutMS: 60000, // Increased to 60 seconds
+      heartbeatFrequencyMS: 5000, // More frequent heartbeats
+      retryWrites: true,
+      retryReads: true,
+      family: 4,
+      socketTimeoutMS: 60000, // Increased socket timeout
     });
-    console.log("MongoDB connected");
+    console.log("MongoDB connected successfully");
   } catch (err) {
+    console.error(`MongoDB connection attempt failed (${retries} retries left):`, err);
     if (retries === 0) {
-      console.error("MongoDB connection failed after multiple retries:", err);
-      throw new Error("Failed to connect to MongoDB");
-    } else {
-      console.log(`Retrying MongoDB connection, attempts left: ${retries}`);
-      await new Promise(resolve => setTimeout(resolve, delay)); // Delay before retrying
-      await connectWithRetry(retries - 1, delay); // Retry connection
+      throw new Error("Failed to connect to MongoDB after multiple retries");
     }
+    await new Promise(resolve => setTimeout(resolve, delay));
+    await connectWithRetry(retries - 1, delay);
   }
 }
 
 export async function connectToDatabase() {
-  if (cached.conn) return cached.conn;
+  if (cached.conn) {
+    // Check if the connection is still alive
+    if (mongoose.connection.readyState === 1) {
+      return cached.conn;
+    }
+    // If connection is not alive, clear the cache
+    cached.conn = null;
+    cached.promise = null;
+  }
 
   if (!cached.promise) {
     cached.promise = connectWithRetry().then(() => mongoose.connection);
   }
 
-  cached.conn = await cached.promise;
-  return cached.conn;
+  try {
+    cached.conn = await cached.promise;
+    return cached.conn;
+  } catch (error) {
+    cached.promise = null;
+    throw error;
+  }
 }

@@ -6,9 +6,9 @@ export type ProductFormData = Omit<IProduct, "_id">;
 
 export interface CreateOrderData {
   items: Array<{
-    productId: Types.ObjectId | string;
-    variant: ImageVariant;
-    quantity: number;
+  productId: Types.ObjectId | string;
+  variant: ImageVariant;
+  quantity: number;
   }>;
   shippingAddress: {
     fullName: string;

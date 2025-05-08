@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNotification } from "./Notification";
+import { Loader2 } from "lucide-react";
 
 interface CheckoutFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: any) => Promise<void>;
   onCancel: () => void;
   totalAmount: number;
+  isProcessing?: boolean;
 }
 
-export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: CheckoutFormProps) {
+export default function CheckoutForm({ onSubmit, onCancel, totalAmount, isProcessing = false }: CheckoutFormProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -21,10 +23,28 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
 
   const { showNotification } = useNotification();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Reset form when modal is closed
+  useEffect(() => {
+    if (!isProcessing) {
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        zipCode: "",
+      });
+    }
+  }, [isProcessing]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Form Data:", formData); // Debugging the form data to ensure it's correct
+    if (isProcessing) {
+      return; // Prevent multiple submissions
+    }
 
     if (!formData.fullName || !formData.email || !formData.phone || !formData.address ||
         !formData.city || !formData.state || !formData.country || !formData.zipCode) {
@@ -46,7 +66,12 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
       return;
     }
 
-    onSubmit(formData);
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      showNotification("Failed to process payment. Please try again.", "error");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +104,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="Full Name"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -94,6 +120,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="Email"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -109,6 +136,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="Phone"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -124,6 +152,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="Address"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -139,6 +168,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="City"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -154,6 +184,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="State"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -169,6 +200,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="Country"
                 required
+                disabled={isProcessing}
               />
             </div>
 
@@ -184,6 +216,7 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
                 className="input input-bordered"
                 placeholder="ZIP Code"
                 required
+                disabled={isProcessing}
               />
             </div>
           </div>
@@ -193,14 +226,23 @@ export default function CheckoutForm({ onSubmit, onCancel, totalAmount }: Checko
               type="button"
               onClick={onCancel}
               className="btn btn-ghost"
+              disabled={isProcessing}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn btn-primary"
+              className={`btn btn-primary ${isProcessing ? 'opacity-75 cursor-not-allowed' : ''}`}
+              disabled={isProcessing}
             >
-              Proceed to Payment
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Processing Payment...
+                </>
+              ) : (
+                "Proceed to Payment"
+              )}
             </button>
           </div>
         </form>

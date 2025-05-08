@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { User } from "lucide-react";
+import {  UserCircle } from "lucide-react";
 import { useNotification } from "./Notification";
 
 export default function Header() {
@@ -28,24 +28,33 @@ export default function Header() {
           className="flex items-center gap-2"
           onClick={() => showNotification("vevvion", "info")}
         >
-        <Image
-  src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/image.png"
-  alt="Vevvion Logo"
-  width={200}
-  height={80}
-  className="rounded-md"
-  priority
-/>
-
+          <Image
+            src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/image.png"
+            alt="Vevvion Logo"
+            width={200}
+            height={80}
+            className="rounded-md"
+            priority
+          />
         </Link>
 
         {/* Navigation Links */}
         <nav className="hidden md:flex gap-6 text-white text-2xl font-medium">
-          <Link href="/products" className="hover:text-green-600 transition-colors">All Products</Link>
-          <Link href="/team" className="hover:text-green-600 transition-colors">Team</Link>
-          <Link href="/about" className="hover:text-green-600 transition-colors">About Us</Link>
-          <Link href="/orders" className="hover:text-green-600 transition-colors">My Orders</Link>
-          <Link href="/policies" className="hover:text-green-600 transition-colors">Policies</Link>
+          <Link href="/products" className="hover:text-green-600 transition-colors">
+            All Products
+          </Link>
+          <Link href="/team" className="hover:text-green-600 transition-colors">
+            Team
+          </Link>
+          <Link href="/about" className="hover:text-green-600 transition-colors">
+            About Us
+          </Link>
+          <Link href="/orders" className="hover:text-green-600 transition-colors">
+            My Orders
+          </Link>
+          <Link href="/policies" className="hover:text-green-600 transition-colors">
+            Policies
+          </Link>
         </nav>
 
         {/* User Dropdown */}
@@ -54,14 +63,40 @@ export default function Header() {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle text-white"
+              className=" text-white"
             >
-              <User className="w-5 h-5" />
+              <UserCircle className="w-12 h-12 mt-8 text-green-600" />
             </div>
             <ul
               tabIndex={0}
               className="dropdown-content mt-3 z-[1] shadow bg-white text-black rounded-box w-64 py-2"
             >
+              {/* Common Links */}
+              <li>
+                <Link
+                  href="/policies"
+                  className="px-4 py-2 hover:bg-green-600 block w-full"
+                >
+                  Policies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/team"
+                  className="px-4 py-2 hover:bg-green-600 block w-full"
+                >
+                  Team
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="px-4 py-2 hover:bg-green-600 block w-full"
+                >
+                  About Us
+                </Link>
+              </li>
+
               {session ? (
                 <>
                   <li className="px-4 py-1 text-sm opacity-70">
@@ -97,15 +132,17 @@ export default function Header() {
                   </li>
                 </>
               ) : (
-                <li>
-                  <Link
-                    href="/login"
-                    className="px-4 py-2  block w-full"
-                    onClick={() => showNotification("Please sign in to continue", "info")}
-                  >
-                    Login
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link
+                      href="/login"
+                      className="px-4 py-2 block  hover:bg-green-600 w-full"
+                      onClick={() => showNotification("Please sign in to continue", "info")}
+                    >
+                      Login
+                    </Link>
+                  </li>
+                </>
               )}
             </ul>
           </div>

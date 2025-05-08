@@ -4,7 +4,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-black text-white py-16 px-4">
       <div className="max-w-3xl mx-auto flex flex-col items-center">
-        <Image src="/logo.png" alt="Vevvion Logo" width={120} height={120} className="mb-6 rounded-full shadow-lg" />
+        <Image src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/image.png" alt="Vevvion Logo" width={120} height={120} className="mb-6 rounded-full shadow-lg" />
         <h1 className="text-4xl font-bold mb-6">About Vevvion Wellness Pvt Ltd</h1>
         <p className="mb-4 text-lg text-center">
           Vevvion Wellness Pvt Ltd deals in the most effective and highest rated healthcare products, with a vision of &quot;giving back to society a joyful and luxurious life.&quot; We are committed to helping people live better lives by offering quality products and opportunities for the future, and by sharing generously with the global community.

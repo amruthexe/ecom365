@@ -32,7 +32,8 @@ if (
   pathname.startsWith("/products") ||
   pathname === "/team" ||
   pathname === "/about" ||
-  pathname === "/orders"
+  pathname === "/orders" ||
+  pathname ==="/policies"
 ) {
   return true;
 }

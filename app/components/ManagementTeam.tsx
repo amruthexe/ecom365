@@ -12,7 +12,7 @@ export default function ManagementTeam() {
         <div className="flex flex-col items-center">
           <div className="rounded-full overflow-hidden w-48 h-48 mb-4">
             <Image
-              src="/ceo.jpg" // Replace with actual image path
+              src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/h2.jpg" // Replace with actual image path
               alt="Lazarus Yabes"
               width={192}
               height={192}
@@ -30,7 +30,7 @@ export default function ManagementTeam() {
         <div className="flex flex-col items-center">
           <div className="rounded-full overflow-hidden w-48 h-48 mb-4">
             <Image
-              src="/image.png" // Replace with actual image path
+              src="https://raw.githubusercontent.com/amruthexe/Talent-trek/main/public/h1.jpg" // Replace with actual image path
               alt="Sam Vijay Praveen"
               width={192}
               height={192}

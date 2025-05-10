@@ -1,13 +1,13 @@
 "use client";
 
 import { FaExclamationTriangle, FaFileContract, FaInfoCircle, FaRegCopyright } from 'react-icons/fa'; // Import icons
-
+import Footer from '../components/Footer';
 export default function TermsAndConditions() {
   return (
     <div className="container mx-auto px-4 py-8 bg-black text-white">
       {/* Main Title */}
       <h1 className="text-4xl font-bold text-green-600 mb-8 text-center">
-        Terms and Conditions
+        Terms and Policies
       </h1>
 
       {/* Terms Intro */}
@@ -104,6 +104,7 @@ export default function TermsAndConditions() {
           To the extent that the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.
         </p>
       </section>
+      
     </div>
   );
 }

@@ -59,7 +59,7 @@ export default function ProductPage() {
       router.push("/register");
       return;
     }
-  
+
     if (!product?._id) {
       showNotification("Invalid product", "error");
       return;
@@ -92,7 +92,7 @@ export default function ProductPage() {
         }],
         shippingAddress,
       });
-  
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount,
@@ -113,19 +113,19 @@ export default function ProductPage() {
           color: "#16a34a",
         },
         modal: {
-          ondismiss: function() {
+          ondismiss: function () {
             setIsProcessingPayment(false);
           }
         }
       };
-  
+
       if (!(window as any).Razorpay) {
         console.error("Razorpay script not loaded after order creation");
         showNotification("Payment system is not available. Please try again later.", "error");
         setIsProcessingPayment(false);
         return;
       }
-  
+
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
     } catch (error) {
@@ -226,7 +226,7 @@ export default function ProductPage() {
             />
           </div>
 
-          <div className="text-sm text-center text-base-content/70">
+          {/* <div className="text-sm text-center text-base-content/70">
             Preview:{" "}
             {IMAGE_VARIANTS[
               defaultVariant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
@@ -236,7 +236,7 @@ export default function ProductPage() {
               defaultVariant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
             ].dimensions.height}
             px
-          </div>
+          </div> */}
         </div>
 
         {/* Product Details Section */}

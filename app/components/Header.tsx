@@ -65,23 +65,23 @@ export default function Header() {
                     href="/about"
                     className={pathname === "/about" ? "active" : ""}
                   >
-                    About
+                    About us
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     href="/team"
                     className={pathname === "/team" ? "active" : ""}
                   >
                     Team
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link
                     href="/policies"
                     className={pathname === "/policies" ? "active" : ""}
                   >
-                    Policies
+                    Terms & Policies
                   </Link>
                 </li>
                 <li>
@@ -120,23 +120,23 @@ export default function Header() {
                   href="/about"
                   className={pathname === "/about" ? "active" : ""}
                 >
-                  About
+                  About us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/team"
                   className={pathname === "/team" ? "active" : ""}
                 >
                   Team
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/policies"
                   className={pathname === "/policies" ? "active" : ""}
                 >
-                  Policies
+                  Terms & Policies
                 </Link>
               </li>
               <li>

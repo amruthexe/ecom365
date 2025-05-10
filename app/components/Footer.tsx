@@ -38,7 +38,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/policies" className="text-base-content/70 hover:text-primary transition-colors">
-                Policies
+                Terms & Policies
                 </Link>
               </li>
               <li>

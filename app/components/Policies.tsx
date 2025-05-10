@@ -1,10 +1,10 @@
 "use client";
 
 import { FaShieldAlt, FaExclamationTriangle, FaExchangeAlt, FaTruck } from 'react-icons/fa'; // Import Lucid-like icons
-
+import Footer from './Footer';
 export default function Policies() {
   return (
-    <div className="container mx-auto px-4 py-8 bg-black text-white">
+    <div className="container mx-auto px-4 pt-8 bg-black text-white">
       {/* Main Title */}
       <h1 className="text-4xl font-bold text-green-600 mb-8 text-center">
         Policies
@@ -97,6 +97,7 @@ export default function Policies() {
           Shipment charges will vary based on the bill amount as mentioned/intimated to the customers from time to time. No extra charges on delivery of product(s) are charged if the product(s) are picked up from Vevvion Wellness facilitator outlets.
         </p>
       </section>
+      <Footer />
     </div>
   );
 }
